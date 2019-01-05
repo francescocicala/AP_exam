@@ -62,7 +62,13 @@ class PostcardList:
     #every message is a dict with a unique hash index generated from the other fields
     return {"index" : self._index, "sender": _sender, "receiver": _receiver, "date" : datetime.datetime.strptime(_date, "%Y %m %d")}
 
-    
+  def formatted(self,message):
+    '''
+    input:  dict message
+    output: test-compliant string message
+    '''
+    return "date:{}; from:{}; to:{};\n".format(datetime.datetime.strftime(message["date"],"%Y-%m-%d"), message["sender"], message["receiver"])
+   
     
  ##################end helper functions#########
 
@@ -133,23 +139,19 @@ class PostcardList:
     '''
     appends current postcards to attached file
     '''
-    
-    pass
+    with open(self._filename, 'a') as file: # appends to file
+      
+      for message in self._postcards:
+        #"date:$(DATE); from:$(SENDER); to:$(RECEIVER);"
+        file.write(formatted(message))
   
   def updateLists(self, *args): 
     '''as read but appending to self._postcards'''
-    
-#check if a str filename is provided. In that case, read file.
-    if len(args) == 0:
-        pass
-    elif len(args) == 1 and isinstance(args[0], str):
-        self._filename = args[0]
-    elif len(args) > 1:
-      raise IOError
+    pass
   
   def getNumberOfPostcards(self): 
     '''returns length of self._postcards'''
-   pass
+   return len(self._postcards)
   
   def getPostcardsByDateRange(self,date_range): 
     '''returns the postcards within a date_range, date_rage is a tuple of 2 date types
